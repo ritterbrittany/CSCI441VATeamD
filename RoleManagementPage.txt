@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Role Management</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="role-management-container">
+        <header>
+            <h1>Role Management</h1>
+            <nav>
+                <ul>
+                    <li><a href="/dashboard">Back to Dashboard</a></li>
+                    <li><a href="/logout">Logout</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <section class="role-list">
+            <h2>Manage User Roles</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Role</th>
+                        <th>Description</th>
+                        <th>Permissions</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Doctor</td>
+                        <td>Can view patient records</td>
+                        <td>View Records</td>
+                        <td><button>Edit</button><button>Delete</button></td>
+                    </tr>
+                    <tr>
+                        <td>Nurse</td>
+                        <td>Can view and update patient records</td>
+                        <td>View, Update Records</td>
+                        <td><button>Edit</button><button>Delete</button></td>
+                    </tr>
+                    <tr>
+                        <td>Admin</td>
+                        <td>Full access to the system</td>
+                        <td>All Permissions</td>
+                        <td><button>Edit</button><button>Delete</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </div>
+</body>
+</html>

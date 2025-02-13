@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EMR Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <header>
+            <h1>Welcome to Your EMR Dashboard</h1>
+            <div class="user-info">
+                <span>User: <strong>John Doe</strong></span>
+                <span>Role: <strong>Doctor</strong></span>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="/patient-records">Patient Records</a></li>
+                    <li><a href="/role-management">Role Management</a></li>
+                    <li><a href="/settings">Settings</a></li>
+                    <li><a href="/logout">Logout</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <section class="main-content">
+            <h2>Dashboard Overview</h2>
+            <p>Welcome, John Doe. Here are some quick actions:</p>
+            <ul>
+                <li><a href="/view-patient-records">View Patient Records</a></li>
+                <li><a href="/assign-permissions">Assign Permissions</a></li>
+            </ul>
+        </section>
+    </div>
+</body>
+</html>
