@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Medical Record</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Update Medical Record for Patient</h1>
+    </header>
+
+    <div class="update-record-container">
+        <h2>Update Patient Information</h2>
+        <!-- Form for updating the patient's data -->
+        <form action="/update-records" method="POST">
+            <input type="hidden" id="patient-id" name="patient-id" value="1"> <!-- Patient ID -->
+
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" value="John Doe" required placeholder="Enter patient's name">
+
+            <label for="dob">Date of Birth</label>
+            <input type="date" id="dob" name="dob" value="1985-05-15" required>
+
+            <label for="gender">Gender</label>
+            <select id="gender" name="gender" required>
+                <option value="Male" selected>Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+            </select>
+
+            <label for="medications">Current Medications</label>
+            <textarea id="medications" name="medications" required placeholder="Enter medications here">Aspirin, Metformin</textarea>
+
+            <label for="notes">Additional Notes</label>
+            <textarea id="notes" name="notes" placeholder="Add any notes about the patient's condition here"></textarea>
+
+            <button type="submit">Save Changes</button>
+        </form>
+    </div>
+
+    <script>
+        // This is where you'd fetch patient data based on the patient ID from the URL (for real applications)
+        const urlParams = new URLSearchParams(window.location.search);
+        const patientId = urlParams.get('id');
+
+        // In a real system, you would make an API request or query your database to fill the form
+        // For now, let's pretend we've filled the form based on the patient ID
+        if (patientId === "1") {
+            document.getElementById("name").value = "John Doe";
+            document.getElementById("dob").value = "1985-05-15";
+            document.getElementById("gender").value = "Male";
+            document.getElementById("medications").value = "Aspirin, Metformin";
+            document.getElementById("notes").value = "Patient is recovering well from recent surgery.";
+        }
+    </script>
+</body>
+</html>

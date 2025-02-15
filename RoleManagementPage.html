@@ -34,23 +34,135 @@
                         <td>Doctor</td>
                         <td>Can view patient records</td>
                         <td>View Records</td>
-                        <td><button>Edit</button><button>Delete</button></td>
+                        <td><button onclick="editRole('doctor')">Edit</button><button onclick="deleteRole('doctor')">Delete</button></td>
                     </tr>
                     <tr>
                         <td>Nurse</td>
                         <td>Can view and update patient records</td>
                         <td>View, Update Records</td>
-                        <td><button>Edit</button><button>Delete</button></td>
+                        <td><button onclick="editRole('nurse')">Edit</button><button onclick="deleteRole('nurse')">Delete</button></td>
                     </tr>
                     <tr>
                         <td>Admin</td>
                         <td>Full access to the system</td>
                         <td>All Permissions</td>
-                        <td><button>Edit</button><button>Delete</button></td>
+                        <td><button onclick="editRole('admin')">Edit</button><button onclick="deleteRole('admin')">Delete</button></td>
                     </tr>
                 </tbody>
             </table>
         </section>
+
+        <!-- Edit Role Modal -->
+        <div id="edit-role-modal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <h2>Edit Role Permissions</h2>
+                <form id="role-edit-form">
+                    <label>
+                        <input type="checkbox" name="viewRecords" id="viewRecords"> View Records
+                    </label><br>
+                    <label>
+                        <input type="checkbox" name="updateRecords" id="updateRecords"> Update Records
+                    </label><br>
+                    <label>
+                        <input type="checkbox" name="deleteRecords" id="deleteRecords"> Delete Records
+                    </label><br>
+                    <label>
+                        <input type="checkbox" name="manageRoles" id="manageRoles"> Manage Roles
+                    </label><br>
+                    <button type="submit">Save Changes</button>
+                </form>
+            </div>
+        </div>
     </div>
+
+    <script>
+        function editRole(role) {
+            // Show the modal for role editing
+            const modal = document.getElementById('edit-role-modal');
+            modal.style.display = 'block';
+
+            // Customize checkboxes based on the selected role
+            if (role === 'doctor') {
+                document.getElementById('viewRecords').checked = true;
+                document.getElementById('updateRecords').checked = false;
+                document.getElementById('deleteRecords').checked = false;
+                document.getElementById('manageRoles').checked = false;
+            } else if (role === 'nurse') {
+                document.getElementById('viewRecords').checked = true;
+                document.getElementById('updateRecords').checked = true;
+                document.getElementById('deleteRecords').checked = false;
+                document.getElementById('manageRoles').checked = false;
+            } else if (role === 'admin') {
+                document.getElementById('viewRecords').checked = true;
+                document.getElementById('updateRecords').checked = true;
+                document.getElementById('deleteRecords').checked = true;
+                document.getElementById('manageRoles').checked = true;
+            }
+        }
+
+        function deleteRole(role) {
+            // Logic to delete role
+            alert('Role "' + role + '" deleted.');
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('edit-role-modal');
+            modal.style.display = 'none';
+        }
+
+        document.getElementById('role-edit-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            // Capture selected permissions from the checkboxes
+            const permissions = {
+                viewRecords: document.getElementById('viewRecords').checked,
+                updateRecords: document.getElementById('updateRecords').checked,
+                deleteRecords: document.getElementById('deleteRecords').checked,
+                manageRoles: document.getElementById('manageRoles').checked
+            };
+            // Logic to save permissions changes
+            alert('Changes saved: ' + JSON.stringify(permissions));
+            closeModal();
+        });
+    </script>
+
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4);
+            padding-top: 60px;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 400px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
 </body>
 </html>
