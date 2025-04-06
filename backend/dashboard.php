@@ -32,7 +32,7 @@ if (!isset($_SESSION['username'])) {
             <h3>Dashboard Overview</h3>
             <p>Welcome, <?php echo $_SESSION['username']; ?>. Here are your quick actions:</p>
             <ul>
-                <li><a href="PatientListPage.php">View Patient Records</a></li>
+                <li><a href="http://localhost/SWEPROJECTTEAMD/CSCI441VATeamD/backend/patientlistpage.php">View Patient Records</a>
                 <li><a href="RoleManagementPage.php">Assign Permissions</a></li>
                 <li><a href="settings.php">Settings</a></li>
                 <li><a href="logout.php">Logout</a></li>

@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EMR Login</title>
-    <link rel="stylesheet" href="../css/styles.css">  <!-- Correct path to styles.css -->
+    <link rel="stylesheet" href="../css/styles.css"> 
 </head>
 <body>
     <header>
@@ -65,11 +65,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <button type="submit">Login</button>
 
             <div class="forgot-password">
-                <a href="/forgot-password">Forgot Password?</a>
+            <a href="http://localhost/SWEPROJECTTEAMD/CSCI441VATeamD/backend/forgot_password.php">Forgot Password?</a>
             </div>
         </form>
 
-        <!-- Optional: Display success or failure message (optional) -->
+        <!-- Display success or failure message ( -->
         <div id="login-message" class="message"></div>
     </div>
 
