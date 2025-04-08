@@ -1,0 +1,396 @@
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #e0f2e9; /* Light Green Background */
+    margin: 0;
+    padding: 0;
+    color: #333; /* Darker text color for readability */
+}
+
+/* Header */
+header {
+    background-color: #388e3c; /* Dark Green for header */
+    color: white;
+    padding: 15px 20px;
+    text-align: center;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 2em;
+}
+
+header nav ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+header nav ul li {
+    display: inline;
+    margin-right: 15px;
+}
+
+header nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+header nav ul li a:hover {
+    text-decoration: underline;
+}
+
+/* Login Page */
+.login-container {
+    width: 100%;
+    max-width: 400px;
+    margin: 50px auto;
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.login-container h2 {
+    text-align: center;
+    color: #388e3c; /* Green color for headings */
+}
+
+.login-container form {
+    display: flex;
+    flex-direction: column;
+}
+
+.login-container form label {
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.login-container form input {
+    margin-bottom: 15px;
+    padding: 10px;
+    font-size: 1em;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.login-container form button {
+    padding: 10px;
+    background-color: #388e3c;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1em;
+    cursor: pointer;
+}
+
+.login-container form button:hover {
+    background-color: #2c6e2b; /* Darker green on hover */
+}
+
+.forgot-password {
+    text-align: center;
+}
+
+.forgot-password a {
+    color: #388e3c;
+    text-decoration: none;
+}
+
+.forgot-password a:hover {
+    text-decoration: underline;
+}
+
+/* Dashboard Page */
+.dashboard-container {
+    padding: 20px;
+}
+
+.dashboard-container h1 {
+    color: #388e3c;
+    font-size: 2.5em;
+}
+
+.dashboard-container .user-info {
+    font-size: 1.2em;
+    margin-bottom: 20px;
+}
+
+.dashboard-container nav ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.dashboard-container nav ul li {
+    display: inline;
+    margin-right: 15px;
+}
+
+.dashboard-container nav ul li a {
+    color: #388e3c;
+    text-decoration: none;
+}
+
+.dashboard-container nav ul li a:hover {
+    text-decoration: underline;
+}
+
+.dashboard-container .main-content {
+    margin-top: 30px;
+}
+
+/* Role Management Page */
+.role-management-container {
+    padding: 20px;
+}
+
+.role-management-container h1 {
+    color: #388e3c;
+}
+
+.role-list table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.role-list th, .role-list td {
+    padding: 12px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+.role-list th {
+    background-color: #388e3c;
+    color: white;
+}
+
+.role-list tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.role-list tr:hover {
+    background-color: #f1f1f1;
+}
+
+.role-list button {
+    padding: 6px 12px;
+    background-color: #388e3c;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.role-list button:hover {
+    background-color: #2c6e2b; /* Darker green on hover */
+}
+
+/* Forgot Password Page */
+.forgot-password-container {
+    width: 100%;
+    max-width: 400px;
+    margin: 50px auto;
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.forgot-password-container h2 {
+    text-align: center;
+    color: #388e3c;
+}
+
+.forgot-password-container form {
+    display: flex;
+    flex-direction: column;
+}
+
+.forgot-password-container form label {
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.forgot-password-container form input {
+    margin-bottom: 15px;
+    padding: 10px;
+    font-size: 1em;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.forgot-password-container form button {
+    padding: 10px;
+    background-color: #388e3c;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1em;
+    cursor: pointer;
+}
+
+.forgot-password-container form button:hover {
+    background-color: #2c6e2b; /* Darker green on hover */
+}
+
+.forgot-password-container .back-to-login {
+    text-align: center;
+    margin-top: 15px;
+}
+
+.forgot-password-container .back-to-login a {
+    color: #388e3c;
+    text-decoration: none;
+}
+
+.forgot-password-container .back-to-login a:hover {
+    text-decoration: underline;
+}
+
+/* Medical Record Access Control */
+#medical-records-section {
+    margin-top: 30px;
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+#medical-records-section h3 {
+    color: #388e3c;
+}
+
+#permission-message {
+    font-size: 1.1em;
+    margin-bottom: 20px;
+}
+
+#permission-message.green {
+    color: green;
+}
+
+#permission-message.orange {
+    color: orange;
+}
+
+#permission-message.red {
+    color: red;
+}
+
+/* Tabs Layout for Patient Records */
+.patient-tabs {
+    margin-top: 20px;
+}
+
+.patient-tabs ul {
+    list-style: none;
+    padding: 0;
+}
+
+.patient-tabs ul li {
+    display: inline;
+    margin-right: 15px;
+}
+
+.patient-tabs ul li a {
+    padding: 10px 20px;
+    background-color: #388e3c;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+}
+
+.patient-tabs ul li a:hover {
+    background-color: #2c6e2b; /* Darker green on hover */
+}
+
+.tab-content {
+    display: none;
+    margin-top: 20px;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.tab-content h4 {
+    color: #388e3c;
+}
+
+.tab-content p {
+    font-size: 1em;
+    line-height: 1.6;
+}
+
+/* Role Management / Assign Permissions (if necessary) */
+.assign-permissions-section {
+    margin-top: 30px;
+}
+
+.assign-permissions-section button {
+    padding: 10px;
+    background-color: #388e3c;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.assign-permissions-section button:hover {
+    background-color: #2c6e2b;
+}
+
+.assign-permissions-section p {
+    margin-top: 15px;
+    font-size: 1.1em;
+}
+/* Update Medical Record Page */
+.update-record-container {
+    width: 100%;
+    max-width: 600px;
+    margin: 50px auto;
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.update-record-container h2 {
+    text-align: center;
+    color: #388e3c;
+}
+
+.update-record-container form {
+    display: flex;
+    flex-direction: column;
+}
+
+.update-record-container form label {
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.update-record-container form input,
+.update-record-container form select,
+.update-record-container form textarea {
+    margin-bottom: 15px;
+    padding: 10px;
+    font-size: 1em;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.update-record-container form button {
+    padding: 10px;
+    background-color: #388e3c;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1em;
+    cursor: pointer;
+}
+
+.update-record-container form button:hover {
+    background-color: #2c6e2b; /* Darker green on hover */
+}
