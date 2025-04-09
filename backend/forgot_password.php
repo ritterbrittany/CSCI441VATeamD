@@ -71,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </form>
 
         <div class="back-to-login">
-        <a href="http://localhost/SWEPROJECTTEAMD/CSCI441VATeamD/backend/login.php">Back to Login.</a>
+        <a href="../backend/login.php">Back to Login.</a>
         </div>
     </div>
 </body>

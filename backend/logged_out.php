@@ -15,7 +15,7 @@
         <h2>You are now logged out</h2>
         <p>Thank you for using the EMR system. You can now log back in anytime.</p>
         <div class="go-back-login">
-        <a href="http://localhost/SWEPROJECTTEAMD/CSCI441VATeamD/backend/login.php">Back to Login.</a>
+        <a href="../backend/login.php">Back to Login.</a>
         </div>
     </div>
 </body>

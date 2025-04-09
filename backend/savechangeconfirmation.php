@@ -26,8 +26,8 @@ if (!isset($_SESSION['username'])) {
         <p>Click below to return to the dashboard or the patient records list.</p>
 
         <!-- Buttons to go back to Dashboard or View Patient Records -->
-        <li><a href="http://localhost/SWEPROJECTTEAMD/CSCI441VATeamD/backend/dashboard.php">Back to Dashboard</a>
-        <li><a href="http://localhost/SWEPROJECTTEAMD/CSCI441VATeamD/backend/patientlistpage.php">View Patient Records</a>
+        <li><a href="../backend/dashboard.php">Back to Dashboard</a>
+        <li><a href="../backend/patientlistpage.php">View Patient Records</a>
     </div>
 </body>
 </html>

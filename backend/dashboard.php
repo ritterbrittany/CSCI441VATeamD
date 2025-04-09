@@ -44,7 +44,7 @@ $role = $_SESSION['role'];
                 <?php endif; ?>
 
                 <!-- Common link for both admin and doctor roles -->
-                <li><a href="http://localhost/SWEPROJECTTEAMD/CSCI441VATeamD/backend/patientlistpage.php">View Patient Records</a>
+                <li><a href="../backend/patientlistpage.php">View Patient Records</a>
                 <li><a href="logout.php">Logout</a></li>
             </ul>
         </section>

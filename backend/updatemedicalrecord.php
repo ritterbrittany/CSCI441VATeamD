@@ -69,7 +69,7 @@ if ($patientId && isset($patientData[$patientId])) {
         </form>
 
         
-        <li><a href="http://localhost/SWEPROJECTTEAMD/CSCI441VATeamD/backend/dashboard.php">Back to Dashboard</a>
+        <li><a href="../backend/dashboard.php">Back to Dashboard</a>
     </div>
 </body>
 </html>

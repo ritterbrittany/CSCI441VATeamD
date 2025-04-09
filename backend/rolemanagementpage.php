@@ -135,6 +135,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['user_id']) && isset($_
             }
         }
     </script>
-    <li><a href="http://localhost/SWEPROJECTTEAMD/CSCI441VATeamD/backend/dashboard.php">Back to Dashboard</a>
+    <li><a href="../backend/dashboard.php">Back to Dashboard</a>
 </body>
 </html>

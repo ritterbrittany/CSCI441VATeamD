@@ -33,10 +33,10 @@ $patients = [
         <h2>Select a patient to update their medical records</h2>
         <ul class="patient-list">
             <?php foreach ($patients as $patient): ?>
-                <li><a href="http://localhost/SWEPROJECTTEAMD/CSCI441VATeamD/backend/updatemedicalrecord.php?id=<?php echo $patient['id']; ?>"><?php echo $patient['name']; ?></a></li>
+                <li><a href="../backend/updatemedicalrecord.php?id=<?php echo $patient['id']; ?>"><?php echo $patient['name']; ?></a></li>
             <?php endforeach; ?>
         </ul>
-        <li><a href="http://localhost/SWEPROJECTTEAMD/CSCI441VATeamD/backend/dashboard.php">Back to Dashboard</a>
+        <li><a href="../backend/dashboard.php">Back to Dashboard</a>
     </section>
 </body>
 </html>

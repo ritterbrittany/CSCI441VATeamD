@@ -4,7 +4,7 @@ session_start();
 // Database connection with error handling
 try {
     $pdo = new PDO('mysql:host=localhost;dbname=username_db', 'root', ''); // Adjust this if using a different DB user/password
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); // Set error mode to throw exceptions
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); 
 } catch (PDOException $e) {
     die("Could not connect to the database: " . $e->getMessage());
 }
@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         // Redirect to dashboard
         header("Location: dashboard.php");
-        exit; // Make sure no further code runs after the redirect
+        exit; 
     } else {
         $error_message = "Invalid credentials! Please try again.";
     }
@@ -65,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <button type="submit">Login</button>
 
             <div class="forgot-password">
-            <a href="http://localhost/SWEPROJECTTEAMD/CSCI441VATeamD/backend/forgot_password.php">Forgot Password?</a>
+            <a href="../backend/forgot_password.php">Forgot Password?</a>
             </div>
         </form>
 
