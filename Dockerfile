@@ -4,13 +4,17 @@ FROM php:8.0-apache
 # Enable Apache mod_rewrite for clean URLs (if needed)
 RUN a2enmod rewrite
 
-# Install the required libraries to build PDO MySQL extension
+# Install PostgreSQL dependencies
 RUN apt-get update && apt-get install -y \
-    libmysqlclient-dev \
+    apt-utils \
+    gnupg \
+    curl \
+    lsb-release \
+    libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Install PDO and PDO MySQL extensions
-RUN docker-php-ext-install pdo pdo_mysql
+# Install PDO and PDO PostgreSQL extension
+RUN docker-php-ext-install pdo pdo_pgsql
 
 # Set working directory inside the container
 WORKDIR /var/www/html
