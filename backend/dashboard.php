@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 // If user is not logged in, redirect to login page
 if (!isset($_SESSION['username'])) {
     header("Location: login.php");
@@ -35,7 +37,6 @@ $role = $_SESSION['role'];
             <p>Welcome, <?php echo $_SESSION['username']; ?>. Here are your quick actions:</p>
 
             <ul>
-                
                 <?php if ($role == 'admin'): ?>
                     <!-- Admin specific links -->
                     <li><a href="RoleManagementPage.php">Assign Permissions</a></li>
@@ -53,4 +54,3 @@ $role = $_SESSION['role'];
     </div>
 </body>
 </html>
-

@@ -1,10 +1,14 @@
 <?php
 session_start();
 
+// Enable error reporting
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
 // Database connection with error handling
 try {
     $pdo = new PDO('pgsql:host=dpg-cvqn0he3jp1c73dsfnvg-a.ohio-postgres.render.com;port=5432;dbname=emr_platform', 'emr_platform_user', 'rBirGywJYnVMuJHFFuc8pYvTJIyrJXik');
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); 
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
     die("Could not connect to the database: " . $e->getMessage());
 }
@@ -26,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         // Redirect to dashboard
         header("Location: dashboard.php");
-        exit; 
+        exit();
     } else {
         $error_message = "Invalid credentials! Please try again.";
     }
@@ -40,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EMR Login</title>
-    <link rel="stylesheet" href="../css/styles.css"> 
+    <link rel="stylesheet" href="../css/styles.css">
 </head>
 <body>
     <header>
@@ -69,7 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </div>
         </form>
 
-        <!-- Display success or failure message ( -->
+        <!-- Display success or failure message -->
         <div id="login-message" class="message"></div>
     </div>
 
