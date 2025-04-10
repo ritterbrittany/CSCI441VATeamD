@@ -1,7 +1,4 @@
 <?php
-ini_set('display_errors', 1); 
-error_reporting(E_ALL);
-
 session_start();
 
 // Database connection with error handling
@@ -27,10 +24,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $_SESSION['username'] = $user['username'];
         $_SESSION['role'] = $user['role'];
 
-
-        echo "Redirecting to dashboard...";
-header("Location: dashboard.php");
-exit();
         // Redirect to dashboard
         header("Location: ../backend/dashboard.php");
         exit; 
