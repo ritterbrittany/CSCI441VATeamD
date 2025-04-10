@@ -11,19 +11,18 @@ class Database {
 
     public function __construct() {
         // Load .env file if not in production (e.g., local development)
-        if (getenv('APP_ENV') !== 'production' && file_exists(__DIR__ . '/../.env')) {
-            $dotenv = parse_ini_file(__DIR__ . '/../.env');
+        if (getenv('APP_ENV') !== 'production' && file_exists(__DIR__ . '/.env')) {
+            $dotenv = parse_ini_file(__DIR__ . '/.env');
             foreach ($dotenv as $key => $value) {
                 putenv("$key=$value");
             }
         }
 
-        // Set configuration with fallback values
-        $this->host = 'dpg-cvqn0he3jp1c73dsfnvg-a.ohio-postgres.render.com';  // Your database host
-        $this->port = '5432'; // Database port
-        $this->db_name = 'emr_platform'; // Database name
-        $this->username = 'emr_platform_user'; // Database username
-        $this->password = 'rBirGywJYnVMuJHFFuc8pYvTJIyrJXik'; // Database password
+        $this->host = getenv('DATABASE_HOST') ?: 'localhost';
+        $this->port = getenv('DATABASE_PORT') ?: '5432';
+        $this->db_name = getenv('DATABASE_NAME');
+        $this->username = getenv('DATABASE_USER');
+        $this->password = getenv('DATABASE_PASSWORD');
 
         // Validate required credentials
         if (empty($this->db_name) || empty($this->username)) {
