@@ -1,14 +1,17 @@
 # Enable mod_rewrite
 RewriteEngine On
 
-# Redirect root (/) to backend/login.php
+# Rewrite the root to redirect to login.php
 RewriteCond %{REQUEST_URI} ^/$
 RewriteRule ^$ /backend/login.php [L]
 
-# Optionally, you can also set the DirectoryIndex here if you want to ensure it's always loaded from backend
-DirectoryIndex backend/login.php
-
-# If you want to allow pretty URLs for other pages, ensure they're handled in the backend folder
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ /backend/$1.php [L]
+# Optionally, route other URLs to backend
+RewriteRule ^login$ /backend/login.php [L]
+RewriteRule ^dashboard$ /backend/dashboard.php [L]
+RewriteRule ^forgot-password$ /backend/forgot_password.php [L]
+RewriteRule ^manage-patients$ /backend/Patient.php [L]
+RewriteRule ^manage-doctors$ /backend/Doctor.php [L]
+RewriteRule ^manage-records$ /backend/MedicalRecord.php [L]
+RewriteRule ^manage-prescriptions$ /backend/Prescription.php [L]
+RewriteRule ^manage-diagnoses$ /backend/Diagnosis.php [L]
+RewriteRule ^manage-rolemanagementpage$ /backend/rolemanagementpage.php [L]
