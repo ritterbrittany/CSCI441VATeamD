@@ -352,3 +352,60 @@ header nav ul li a:hover {
     background-color: #2c6e2b; /* Darker green on hover */
 }
 
+/* Patient List Table */
+.patient-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+.patient-table th, .patient-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.patient-table th {
+    background-color: #388e3c; /* Dark Green header */
+    color: white;
+    font-size: 1.2em;
+}
+
+.patient-table td {
+    color: #333;
+}
+
+.patient-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Action Button */
+.btn-update, .btn-back {
+    display: inline-block;
+    padding: 8px 15px;
+    background-color: #388e3c;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+.btn-update:hover, .btn-back:hover {
+    background-color: #2c6e2b; /* Darker green on hover */
+}
+
+.btn-back {
+    display: block;
+    margin-top: 20px;
+    text-align: center;
+}
+
+/* No Patients Found */
+.patient-table tr td {
+    text-align: center;
+    font-size: 1.1em;
+    color: #999;
+}

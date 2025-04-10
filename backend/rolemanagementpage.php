@@ -1,17 +1,23 @@
 <?php
 session_start();
 
-// If user is not logged in or is not an admin, redirect to login page
+// If the user is not logged in or is not an admin, redirect to login page
 if (!isset($_SESSION['username']) || $_SESSION['role'] != 'admin') {
     header("Location: login.php");
     exit();
 }
 
-require_once 'db_connection.php'; // Make sure you have your DB connection here
+// Include the Database class for the connection
+require_once '../Database.php'; // Adjust the path if necessary
+
+// Create a Database object and get the connection
+$database = new Database();
+$pdo = $database->connect();
 
 // Fetch all users from the database
-$query = "SELECT id, username, role FROM users";
-$result = mysqli_query($conn, $query);
+$query = "SELECT user_id, username, role FROM users";
+$stmt = $pdo->prepare($query);
+$stmt->execute();
 
 // Handle role update when form is submitted
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['user_id']) && isset($_POST['new_role'])) {
@@ -19,8 +25,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['user_id']) && isset($_
     $newRole = $_POST['new_role'];
 
     // Update the user's role in the database
-    $updateQuery = "UPDATE users SET role = '$newRole' WHERE id = $userId";
-    mysqli_query($conn, $updateQuery);
+    $updateQuery = "UPDATE users SET role = :new_role WHERE user_id = :user_id";
+    $updateStmt = $pdo->prepare($updateQuery);
+    $updateStmt->execute(['new_role' => $newRole, 'user_id' => $userId]);
 
     // Redirect to reload the page and see the changes
     header("Location: RoleManagementPage.php");
@@ -87,17 +94,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['user_id']) && isset($_
                 </thead>
                 <tbody id="roleTableBody">
                     <?php
-                    while ($user = mysqli_fetch_assoc($result)) {
+                    while ($user = $stmt->fetch(PDO::FETCH_ASSOC)) {
                         echo "<tr>";
                         echo "<td>" . htmlspecialchars($user['username']) . "</td>";
                         echo "<td>" . htmlspecialchars($user['role']) . "</td>";
                         echo "<td>
                             <form method='POST' action=''>
-                                <input type='hidden' name='user_id' value='" . $user['id'] . "'>
+                                <input type='hidden' name='user_id' value='" . $user['user_id'] . "'>
                                 <select name='new_role'>
                                     <option value='admin' " . ($user['role'] == 'admin' ? 'selected' : '') . ">Admin</option>
                                     <option value='doctor' " . ($user['role'] == 'doctor' ? 'selected' : '') . ">Doctor</option>
-                                    <option value='nurse' " . ($user['role'] == 'nurse' ? 'selected' : '') . ">Nurse</option>
                                 </select>
                                 <button type='submit'>Update Role</button>
                             </form>
@@ -135,6 +141,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['user_id']) && isset($_
             }
         }
     </script>
-    <li><a href="../backend/dashboard.php">Back to Dashboard</a>
+    <li><a href="../backend/dashboard.php">Back to Dashboard</a></li>
 </body>
 </html>

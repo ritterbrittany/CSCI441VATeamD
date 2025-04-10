@@ -42,9 +42,13 @@ $role = $_SESSION['role'];
                     <!-- Admin specific links -->
                     <li><a href="RoleManagementPage.php">Assign Permissions</a></li>
                 <?php endif; ?>
-
-                <!-- Common link for both admin and doctor roles -->
-                <li><a href="../backend/patientlistpage.php">View Patient Records</a>
+                
+                <!-- Database Folder Links -->
+                <li><a href="../backend/Patient.php">Manage Patients</a></li>
+                <li><a href="../backend/Doctor.php">Manage Doctors</a></li>
+                <li><a href="../backend/MedicalRecord.php">Manage Medical Records</a></li>
+                <li><a href="../backend/Prescription.php">Manage Prescriptions</a></li>
+                <li><a href="../backend/Diagnosis.php">Manage Diagnoses</a></li>
                 <li><a href="logout.php">Logout</a></li>
             </ul>
         </section>

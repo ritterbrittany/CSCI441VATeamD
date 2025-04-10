@@ -3,7 +3,7 @@ session_start();
 
 // Database connection with error handling
 try {
-    $pdo = new PDO('mysql:host=localhost;dbname=username_db', 'root', ''); // Adjust this if using a different DB user/password
+    $pdo = new PDO('pgsql:host=dpg-cvqn0he3jp1c73dsfnvg-a.ohio-postgres.render.com;port=5432;dbname=emr_platform', 'emr_platform_user', 'rBirGywJYnVMuJHFFuc8pYvTJIyrJXik');
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); 
 } catch (PDOException $e) {
     die("Could not connect to the database: " . $e->getMessage());
@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $user = $stmt->fetch();
 
     // Check if user exists and verify password
-    if ($user && password_verify($password, $user['password'])) {
+    if ($user && password_verify($password, $user['password_hash'])) {
         // Store session data
         $_SESSION['username'] = $user['username'];
         $_SESSION['role'] = $user['role'];

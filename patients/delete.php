@@ -4,8 +4,8 @@ header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json');
 
 // Include database and model
-include_once '../../config/Database.php';
-include_once '../../models/Patient.php';
+include_once '../Database.php';
+include_once '../backend/Patient.php';
 
 // Instantiate DB & connect
 $database = new Database();

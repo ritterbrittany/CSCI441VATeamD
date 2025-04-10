@@ -4,8 +4,8 @@ header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json');
 
 // Include database and model files
-include_once '../../config/Database.php';
-include_once '../../models/MedicalRecord.php';
+include_once '../Database.php';
+include_once '../backend/MedicalRecord.php';
 
 // Instantiate database connection and medical record object
 $database = new Database();
