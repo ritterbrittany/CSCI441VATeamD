@@ -1,10 +1,14 @@
 # Enable mod_rewrite
 RewriteEngine On
 
-# Set the Directory Index to login.php (default page)
-DirectoryIndex login.php
+# Redirect root (/) to backend/login.php
+RewriteCond %{REQUEST_URI} ^/$
+RewriteRule ^$ /backend/login.php [L]
 
-# Optionally, allow pretty URLs
+# Optionally, you can also set the DirectoryIndex here if you want to ensure it's always loaded from backend
+DirectoryIndex backend/login.php
+
+# If you want to allow pretty URLs for other pages, ensure they're handled in the backend folder
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ /backend/$1.php [L]
