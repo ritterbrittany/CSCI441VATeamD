@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $_SESSION['role'] = $user['role'];
 
         // Redirect to dashboard
-        header("Location: dashboard.php");
+        header("Location: ../backend/dashboard.php");
         exit; 
     } else {
         $error_message = "Invalid credentials! Please try again.";
