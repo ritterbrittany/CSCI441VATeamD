@@ -1,74 +1,74 @@
 <?php
 session_start();
 
-// If the user is not logged in, redirect to the login page
+// Redirect to login if not authenticated
 if (!isset($_SESSION['username'])) {
     header("Location: login.php");
     exit();
 }
 
-// Include the Database class for the connection
-require_once '../Database.php'; // Adjust the path if necessary
-
-// Create a Database object and get the connection
+require_once '../Database.php';
 $database = new Database();
 $pdo = $database->connect();
 
-// Define the MedicalRecord class
+// MedicalRecord class
 class MedicalRecord {
     private $pdo;
 
-    // Constructor to initialize the PDO connection
     public function __construct($pdo) {
         $this->pdo = $pdo;
     }
 
-    // Fetch all medical records
     public function read() {
-        $query = "SELECT id, appointment_id, notes, created_at FROM medical_records";
-        $stmt = $this->pdo->prepare($query);
+        $stmt = $this->pdo->prepare("SELECT id, appointment_id FROM medical_records");
         $stmt->execute();
-        return $stmt;  // Return the PDO statement object (not an array)
+        return $stmt;
     }
 
-    // Fetch a single medical record's detailed information by id
     public function read_single($id) {
-        $query = "SELECT * FROM medical_records WHERE id = :id";
-        $stmt = $this->pdo->prepare($query);
+        $stmt = $this->pdo->prepare("SELECT * FROM medical_records WHERE id = :id");
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt;
     }
-}
 
-// Instantiate the MedicalRecord class
-$medicalRecord = new MedicalRecord($pdo);
+    public function create($data) {
+        $stmt = $this->pdo->prepare("INSERT INTO medical_records (appointment_id, notes, created_at) VALUES (:appointment_id, :notes, NOW())");
+        return $stmt->execute([
+            ':appointment_id' => $data['appointment_id'],
+            ':notes' => $data['notes']
+        ]);
+    }
 
-// Fetch all medical records for the list
-$medical_records_stmt = $medicalRecord->read();
-$medical_records = [];
-if ($medical_records_stmt->rowCount() > 0) {
-    while ($row = $medical_records_stmt->fetch(PDO::FETCH_ASSOC)) {
-        $medical_records[] = $row;
+    public function delete($id) {
+        $stmt = $this->pdo->prepare("DELETE FROM medical_records WHERE id = :id");
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        return $stmt->execute();
     }
 }
 
-// Check if `id` is set in the URL, if so, fetch the medical record's details
-$single_medical_record = null;
+$record = new MedicalRecord($pdo);
+
+// Handle form submission for adding a record
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['appointment_id'])) {
+    $success = $record->create($_POST);
+    if ($success) {
+        header("Location: MedicalRecord.php");
+        exit();
+    } else {
+        $message = "Failed to add medical record.";
+    }
+}
+
+// Fetch all records
+$records_stmt = $record->read();
+$records = $records_stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Fetch single record if requested
+$single_record = null;
 if (isset($_GET['id'])) {
-    $id = $_GET['id'];
-    $stmt = $medicalRecord->read_single($id);
-
-    if ($stmt->rowCount() > 0) {
-        $single_medical_record = $stmt->fetch(PDO::FETCH_ASSOC);
-    }
-} else {
-    // If no id, show default message
-    $single_medical_record = [
-        'appointment_id' => 'N/A',
-        'notes' => 'No notes available',
-        'created_at' => 'N/A'
-    ];
+    $stmt = $record->read_single($_GET['id']);
+    $single_record = $stmt->fetch(PDO::FETCH_ASSOC);
 }
 ?>
 
@@ -76,81 +76,30 @@ if (isset($_GET['id'])) {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Medical Record Details</title>
     <link rel="stylesheet" href="../css/styles.css">
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            // Check if `id` is in the URL
-            const urlParams = new URLSearchParams(window.location.search);
-            const recordId = urlParams.get("id");
+        function deleteRecord(id) {
+            if (!confirm("Are you sure you want to delete this record?")) return;
 
-            // If `id` exists in the URL, update the medical record details
-            if (recordId) {
-                displayMedicalRecordDetails(recordId);
-            } else {
-                displayDefaultMedicalRecordDetails();  // Default case: show a hardcoded message
-            }
-
-            // Always display all medical records in the list below the details section
-            displayAllMedicalRecords();
-        });
-
-        // Fetch the medical record details dynamically from the PHP backend
-        function displayMedicalRecordDetails(recordId) {
-            fetch(`MedicalRecord.php?id=${recordId}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data) {
-                        displayMedicalRecordDetailsOnPage(data);
-                    }
-                })
-                .catch(error => console.error('Error fetching medical record data:', error));
-        }
-
-        // Function to display medical record details dynamically
-        function displayMedicalRecordDetailsOnPage(record) {
-            document.getElementById('appointmentId').textContent = record.appointment_id;
-            document.getElementById('notes').textContent = record.notes;
-            document.getElementById('createdAt').textContent = record.created_at;
-        }
-
-        // Function to display default medical record details if no `id` is in the URL
-        function displayDefaultMedicalRecordDetails() {
-            const hardcodedRecord = {
-                appointment_id: "38",
-                notes: "Patient reports mild chest pain. Further tests and consultations recommended. Refer to cardiologist.",
-                created_at: "2025-04-03 16:45:00"
-            };
-            displayMedicalRecordDetailsOnPage(hardcodedRecord);
-        }
-
-        // Function to display all medical records in the table
-        function displayAllMedicalRecords() {
-            const medicalRecords = <?php echo json_encode($medical_records); ?>;
-            let medicalRecordsTableBody = document.getElementById('medicalRecordsTableBody');
-            medicalRecordsTableBody.innerHTML = ''; // Clear the existing rows
-
-            if (medicalRecords.length > 0) {
-                medicalRecords.forEach(function (record) {
-                    let row = document.createElement('tr');
-                    let appointmentCell = document.createElement('td');
-                    appointmentCell.textContent = record.appointment_id;
-
-                    let actionCell = document.createElement('td');
-                    let link = document.createElement('a');
-                    link.href = `MedicalRecord.php?id=${record.id}`;  // Link to view medical record details
-                    link.textContent = 'View Details';
-                    link.classList.add('btn-view');
-                    actionCell.appendChild(link);
-
-                    row.appendChild(appointmentCell);
-                    row.appendChild(actionCell);
-                    medicalRecordsTableBody.appendChild(row);
-                });
-            } else {
-                medicalRecordsTableBody.innerHTML = '<tr><td colspan="2">No medical records found.</td></tr>';
-            }
+            fetch('../medical_records/delete.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `id=${id}`
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert("Record deleted successfully.");
+                    location.reload();
+                } else {
+                    alert("Failed to delete record.");
+                }
+            })
+            .catch(err => {
+                console.error('Delete error:', err);
+                alert("An error occurred.");
+            });
         }
     </script>
 </head>
@@ -159,33 +108,65 @@ if (isset($_GET['id'])) {
         <h1>Medical Record Details</h1>
     </header>
 
-    <section id="medicalRecordDetails" class="dashboard-container">
-        <h2>Medical Record Information</h2>
-        <p>Loading medical record details...</p>
-        <div id="medicalRecordInfo">
-            <p><strong>Appointment ID:</strong> <span id="appointmentId"></span></p>
-            <p><strong>Notes:</strong> <span id="notes"></span></p>
-            <p><strong>Created At:</strong> <span id="createdAt"></span></p>
+    <section class="dashboard-container">
+        <h2>Record Information</h2>
+        <div>
+            <?php if ($single_record): ?>
+                <p><strong>Appointment ID:</strong> <?= htmlspecialchars($single_record['appointment_id']) ?></p>
+                <p><strong>Notes:</strong> <?= nl2br(htmlspecialchars($single_record['notes'])) ?></p>
+                <p><strong>Created At:</strong> <?= htmlspecialchars($single_record['created_at']) ?></p>
+            <?php else: ?>
+                <p>No record selected.</p>
+            <?php endif; ?>
         </div>
     </section>
 
-    <section class="medical-records-list-container dashboard-container">
+    <section class="dashboard-container">
         <h2>All Medical Records</h2>
+        <input type="text" id="searchInput" placeholder="Search..." onkeyup="filterRecords()" class="search-bar">
         <table class="medical-records-table">
             <thead>
-                <tr>
-                    <th>Appointment ID</th>
-                    <th>Action</th>
-                </tr>
+                <tr><th>Appointment ID</th><th>Actions</th></tr>
             </thead>
-            <tbody id="medicalRecordsTableBody">
-                <!-- Medical records list will be loaded here dynamically via JavaScript -->
+            <tbody id="recordsTableBody">
+                <?php foreach ($records as $r): ?>
+                <tr>
+                    <td><?= htmlspecialchars($r['appointment_id']) ?></td>
+                    <td>
+                        <a href="?id=<?= $r['id'] ?>" class="btn-view">View Details</a>
+                        <button onclick="deleteRecord(<?= $r['id'] ?>)">Delete</button>
+                    </td>
+                </tr>
+                <?php endforeach; ?>
             </tbody>
         </table>
     </section>
 
+    <section class="dashboard-container">
+        <h2>Add Medical Record</h2>
+        <?php if (!empty($message)): ?>
+            <p style="color: red;"><?= $message ?></p>
+        <?php endif; ?>
+        <form method="POST" class="add-record-form">
+            <input name="appointment_id" required placeholder="Appointment ID">
+            <textarea name="notes" required placeholder="Notes"></textarea>
+            <button type="submit">Add Record</button>
+        </form>
+    </section>
+
     <footer>
-        <a href="MedicalRecord.php" class="btn-back">Back to Medical Records List</a>
+        <a href="dashboard.php" class="btn-back">Back to Dashboard</a>
     </footer>
+
+    <script>
+        function filterRecords() {
+            const input = document.getElementById('searchInput').value.toLowerCase();
+            const rows = document.querySelectorAll('#recordsTableBody tr');
+            rows.forEach(row => {
+                const idText = row.querySelector('td').textContent.toLowerCase();
+                row.style.display = idText.includes(input) ? '' : 'none';
+            });
+        }
+    </script>
 </body>
 </html>

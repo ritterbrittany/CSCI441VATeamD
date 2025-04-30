@@ -3,6 +3,14 @@
 header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json');
 
+// Start session and check if user is logged in
+session_start();
+if (!isset($_SESSION['username'])) {
+    echo json_encode(['message' => 'User not logged in']);
+    exit();
+}
+
+
 // Include necessary files
 include_once '../Database.php';
 include_once '../backend/Patient.php';

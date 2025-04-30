@@ -1,176 +1,117 @@
 <?php
 session_start();
 
-// If the user is not logged in, redirect to the login page
+// Redirect if user is not logged in
 if (!isset($_SESSION['username'])) {
     header("Location: login.php");
     exit();
 }
 
-// Include the Database class for the connection
-require_once '../Database.php'; // Adjust the path if necessary
-
-// Create a Database object and get the connection
+require_once '../Database.php';
 $database = new Database();
 $pdo = $database->connect();
 
-// Define the Patient class
+// Patient class
 class Patient {
     private $pdo;
 
-    // Constructor to initialize the PDO connection
     public function __construct($pdo) {
         $this->pdo = $pdo;
     }
 
-    // Fetch all patients (only first and last names)
     public function read() {
-        $query = "SELECT patient_id, first_name, last_name FROM patients";
-        $stmt = $this->pdo->prepare($query);
+        $stmt = $this->pdo->prepare("SELECT patient_id, first_name, last_name FROM patients");
         $stmt->execute();
-        return $stmt;  // Return the PDO statement object (not an array)
+        return $stmt;
     }
 
-    // Fetch a single patient's detailed information by patient_id
     public function read_single($patient_id) {
-        $query = "SELECT * FROM patients WHERE patient_id = :patient_id";
-        $stmt = $this->pdo->prepare($query);
+        $stmt = $this->pdo->prepare("SELECT * FROM patients WHERE patient_id = :patient_id");
         $stmt->bindParam(':patient_id', $patient_id, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt;
     }
+
+    public function create($data) {
+        $stmt = $this->pdo->prepare("INSERT INTO patients 
+            (first_name, last_name, date_of_birth, gender, email, phone, address, city, state, zip_code, ssn)
+            VALUES
+            (:first_name, :last_name, :date_of_birth, :gender, :email, :phone, :address, :city, :state, :zip_code, :ssn)");
+        return $stmt->execute([
+            ':first_name' => $data['first_name'],
+            ':last_name' => $data['last_name'],
+            ':date_of_birth' => $data['date_of_birth'],
+            ':gender' => $data['gender'],
+            ':email' => $data['email'],
+            ':phone' => $data['phone'],
+            ':address' => $data['address'],
+            ':city' => $data['city'],
+            ':state' => $data['state'],
+            ':zip_code' => $data['zip_code'],
+            ':ssn' => $data['ssn']
+        ]);
+    }
+
+    public function delete($id) {
+        $stmt = $this->pdo->prepare("DELETE FROM patients WHERE patient_id = :id");
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
 }
 
-// Instantiate the Patient class
 $patient = new Patient($pdo);
 
-// Fetch all patients for the list
-$patients_stmt = $patient->read();
-$patients = [];
-if ($patients_stmt->rowCount() > 0) {
-    while ($row = $patients_stmt->fetch(PDO::FETCH_ASSOC)) {
-        $patients[] = $row;
+// Handle form submission for adding a patient
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['first_name'])) {
+    $success = $patient->create($_POST);
+    if ($success) {
+        header("Location: Patient.php");
+        exit();
+    } else {
+        $message = "Failed to add patient.";
     }
 }
 
-// Check if `patient_id` is set in the URL, if so, fetch the patient's details
+// Get all patients
+$patients_stmt = $patient->read();
+$patients = $patients_stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Get specific patient details if needed
 $single_patient = null;
 if (isset($_GET['patient_id'])) {
-    $patient_id = $_GET['patient_id'];
-    $stmt = $patient->read_single($patient_id);
-
-    if ($stmt->rowCount() > 0) {
-        $single_patient = $stmt->fetch(PDO::FETCH_ASSOC);
-    }
-} else {
-    // If no patient_id, show default patient details (Emily Walker)
-    $single_patient = [
-        'first_name' => 'Emily',
-        'last_name' => 'Walker',
-        'date_of_birth' => '1988-03-12',
-        'gender' => 'Female',
-        'email' => 'emily.walker@example.com',
-        'phone' => '3125550101',
-        'address' => '500 Elm St',
-        'city' => 'Chicago',
-        'state' => 'IL',
-        'zip_code' => '60601'
-    ];
+    $stmt = $patient->read_single($_GET['patient_id']);
+    $single_patient = $stmt->fetch(PDO::FETCH_ASSOC);
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Patient Details</title>
     <link rel="stylesheet" href="../css/styles.css">
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            // Check if `patient_id` is in the URL
-            const urlParams = new URLSearchParams(window.location.search);
-            const patientId = urlParams.get("patient_id");
+        function deletePatient(patientId) {
+            if (!confirm("Are you sure you want to delete this patient?")) return;
 
-            // If `patient_id` exists in the URL, update patient details
-            if (patientId) {
-                displayPatientDetails(patientId);
-            } else {
-                displayHardcodedPatientDetails();  // Default case: show hardcoded patient details
-            }
-
-            // Always display all patients in the list below the details section
-            displayAllPatients();
-        });
-
-        // Fetch the patient details dynamically from the PHP backend
-        function displayPatientDetails(patientId) {
-            fetch(`Patient.php?patient_id=${patientId}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data) {
-                        displayPatientDetailsOnPage(data);
-                    }
-                })
-                .catch(error => console.error('Error fetching patient data:', error));
-        }
-
-        // Function to display patient details dynamically
-        function displayPatientDetailsOnPage(patient) {
-            document.getElementById('firstName').textContent = patient.first_name;
-            document.getElementById('lastName').textContent = patient.last_name;
-            document.getElementById('dob').textContent = patient.date_of_birth;
-            document.getElementById('gender').textContent = patient.gender;
-            document.getElementById('email').textContent = patient.email;
-            document.getElementById('phone').textContent = patient.phone;
-            document.getElementById('address').textContent = patient.address;
-            document.getElementById('city').textContent = patient.city;
-            document.getElementById('state').textContent = patient.state;
-            document.getElementById('zipCode').textContent = patient.zip_code;
-        }
-
-        // Function to display hardcoded patient details if no `patient_id` is in the URL
-        function displayHardcodedPatientDetails() {
-            const hardcodedPatient = {
-                first_name: "Emily",
-                last_name: "Walker",
-                date_of_birth: "1988-03-12",
-                gender: "Female",
-                email: "emily.walker@example.com",
-                phone: "3125550101",
-                address: "500 Elm St",
-                city: "Chicago",
-                state: "IL",
-                zip_code: "60601"
-            };
-            displayPatientDetailsOnPage(hardcodedPatient);
-        }
-
-        // Function to display all patients in the table
-        function displayAllPatients() {
-            const patients = <?php echo json_encode($patients); ?>;
-            let patientsTableBody = document.getElementById('patientsTableBody');
-            patientsTableBody.innerHTML = ''; // Clear the existing rows
-
-            if (patients.length > 0) {
-                patients.forEach(function (patient) {
-                    let row = document.createElement('tr');
-                    let nameCell = document.createElement('td');
-                    nameCell.textContent = patient.first_name + ' ' + patient.last_name;
-
-                    let actionCell = document.createElement('td');
-                    let link = document.createElement('a');
-                    link.href = `Patient.php?patient_id=${patient.patient_id}`;  // Link to view patient details
-                    link.textContent = 'View Details';
-                    link.classList.add('btn-view');
-                    actionCell.appendChild(link);
-
-                    row.appendChild(nameCell);
-                    row.appendChild(actionCell);
-                    patientsTableBody.appendChild(row);
-                });
-            } else {
-                patientsTableBody.innerHTML = '<tr><td colspan="2">No patients found.</td></tr>';
-            }
+            fetch('../patients/delete.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `patient_id=${patientId}`
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert("Patient deleted successfully.");
+                    location.reload();
+                } else {
+                    alert("Failed to delete patient.");
+                }
+            })
+            .catch(err => {
+                console.error('Delete error:', err);
+                alert("An error occurred.");
+            });
         }
     </script>
 </head>
@@ -179,41 +120,87 @@ if (isset($_GET['patient_id'])) {
         <h1>Patient Details</h1>
     </header>
 
-    <section id="patientDetails" class="dashboard-container">
+    <section class="dashboard-container">
         <h2>Patient Information</h2>
-        <p>Loading patient details...</p>
-        <div id="patientInfo">
-            <p><strong>First Name:</strong> <span id="firstName"></span></p>
-            <p><strong>Last Name:</strong> <span id="lastName"></span></p>
-            <p><strong>Date of Birth:</strong> <span id="dob"></span></p>
-            <p><strong>Gender:</strong> <span id="gender"></span></p>
-            <p><strong>Email:</strong> <span id="email"></span></p>
-            <p><strong>Phone:</strong> <span id="phone"></span></p>
-            <p><strong>Address:</strong> <span id="address"></span></p>
-            <p><strong>City:</strong> <span id="city"></span></p>
-            <p><strong>State:</strong> <span id="state"></span></p>
-            <p><strong>Zip Code:</strong> <span id="zipCode"></span></p>
+        <div>
+            <?php if ($single_patient): ?>
+                <p><strong>First Name:</strong> <?= htmlspecialchars($single_patient['first_name']) ?></p>
+                <p><strong>Last Name:</strong> <?= htmlspecialchars($single_patient['last_name']) ?></p>
+                <p><strong>DOB:</strong> <?= htmlspecialchars($single_patient['date_of_birth']) ?></p>
+                <p><strong>Gender:</strong> <?= htmlspecialchars($single_patient['gender']) ?></p>
+                <p><strong>Email:</strong> <?= htmlspecialchars($single_patient['email']) ?></p>
+                <p><strong>Phone:</strong> <?= htmlspecialchars($single_patient['phone']) ?></p>
+                <p><strong>Address:</strong> <?= htmlspecialchars($single_patient['address']) ?></p>
+                <p><strong>City:</strong> <?= htmlspecialchars($single_patient['city']) ?></p>
+                <p><strong>State:</strong> <?= htmlspecialchars($single_patient['state']) ?></p>
+                <p><strong>Zip:</strong> <?= htmlspecialchars($single_patient['zip_code']) ?></p>
+                <p><strong>SSN:</strong> <?php echo $single_patient['ssn']; ?></p>
+            <?php else: ?>
+                <p>No patient selected.</p>
+            <?php endif; ?>
         </div>
     </section>
 
-    <section class="patient-list-container dashboard-container">
+    <section class="dashboard-container">
         <h2>All Patients</h2>
+        <input type="text" id="searchInput" placeholder="Search..." onkeyup="filterPatients()" class="search-bar">
         <table class="patient-table">
             <thead>
-                <tr>
-                    <th>Patient Name</th>
-                    <th>Action</th>
-                </tr>
+                <tr><th>Name</th><th>Actions</th></tr>
             </thead>
             <tbody id="patientsTableBody">
-                <!-- Patient list will be loaded here dynamically via JavaScript -->
+                <?php foreach ($patients as $p): ?>
+                <tr>
+                    <td><?= htmlspecialchars($p['first_name']) . ' ' . htmlspecialchars($p['last_name']) ?></td>
+                    <td>
+                        <a href="?patient_id=<?= $p['patient_id'] ?>" class="btn-view">View Details</a>
+                        <button onclick="deletePatient(<?= $p['patient_id'] ?>)">Delete</button>
+                    </td>
+                </tr>
+                <?php endforeach; ?>
             </tbody>
         </table>
     </section>
 
+    <section class="dashboard-container">
+        <h2>Add Patient</h2>
+        <?php if (!empty($message)): ?>
+            <p style="color: red;"><?= $message ?></p>
+        <?php endif; ?>
+        <form method="POST" class="add-patient-form">
+            <input name="first_name" required placeholder="First Name">
+            <input name="last_name" required placeholder="Last Name">
+            <input type="date" name="date_of_birth" required>
+            <select name="gender" required>
+                <option value="">Select Gender</option>
+                <option>Male</option>
+                <option>Female</option>
+                <option>Other</option>
+            </select>
+            <input name="email" type="email" placeholder="Email">
+            <input name="phone" placeholder="Phone">
+            <input name="address" placeholder="Address">
+            <input name="city" placeholder="City">
+            <input name="state" placeholder="State">
+            <input name="zip_code" placeholder="Zip Code">
+            <input name="ssn" placeholder="SSN">
+            <button type="submit">Add Patient</button>
+        </form>
+    </section>
+
     <footer>
-        <a href="Patient.php" class="btn-back">Back to Patients List</a>
+        <a href="dashboard.php" class="btn-back">Back to Dashboard</a>
     </footer>
+
+    <script>
+        function filterPatients() {
+            const input = document.getElementById('searchInput').value.toLowerCase();
+            const rows = document.querySelectorAll('#patientsTableBody tr');
+            rows.forEach(row => {
+                const name = row.querySelector('td').textContent.toLowerCase();
+                row.style.display = name.includes(input) ? '' : 'none';
+            });
+        }
+    </script>
 </body>
 </html>
-

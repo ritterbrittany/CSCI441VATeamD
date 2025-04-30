@@ -14,31 +14,33 @@ $db = $database->connect();
 // Instantiate Patient object
 $patient = new Patient($db);
 
-// Get raw input
-$data = json_decode(file_get_contents("php://input"));
-
-// Validate required field
-if (!isset($data->patient_id)) {
-    echo json_encode(['message' => 'Missing Required Parameters']);
+// Check for POST data
+if (!isset($_POST['patient_id'])) {
+    echo json_encode(['success' => false, 'message' => 'Missing patient_id']);
     exit();
 }
 
-$patient->patient_id = $data->patient_id;
+$patient_id = $_POST['patient_id'];
 
 // Check if patient exists
 $query = 'SELECT patient_id FROM patients WHERE patient_id = :patient_id';
 $stmt = $db->prepare($query);
-$stmt->bindParam(':patient_id', $patient->patient_id);
+$stmt->bindParam(':patient_id', $patient_id, PDO::PARAM_INT);
 $stmt->execute();
 
 if ($stmt->rowCount() === 0) {
-    echo json_encode(['message' => 'patient_id Not Found']);
+    echo json_encode(['success' => false, 'message' => 'Patient not found']);
     exit();
 }
 
-// Attempt to delete patient
-if ($patient->delete()) {
-    echo json_encode(['patient_id' => $patient->patient_id]);
-} else {
-    echo json_encode(['message' => 'Patient Not Deleted']);
+// Delete patient
+try {
+    $deleteQuery = 'DELETE FROM patients WHERE patient_id = :patient_id';
+    $deleteStmt = $db->prepare($deleteQuery);
+    $deleteStmt->bindParam(':patient_id', $patient_id, PDO::PARAM_INT);
+    $deleteStmt->execute();
+
+    echo json_encode(['success' => true, 'message' => 'Patient deleted']);
+} catch (PDOException $e) {
+    echo json_encode(['success' => false, 'message' => 'Delete failed', 'error' => $e->getMessage()]);
 }

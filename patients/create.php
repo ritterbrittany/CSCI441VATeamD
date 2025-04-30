@@ -1,39 +1,34 @@
 <?php
-// Headers
-header('Access-Control-Allow-Origin: *');
-header('Content-Type: application/json');
+require_once '../Database.php';
+require_once '../backend/Patient.php';
 
-// Include database and model
-include_once '../Database.php';
-include_once '../backend/Patient.php';
-
-// Instantiate DB & connect
 $database = new Database();
 $db = $database->connect();
 
-// Instantiate Patient Object
 $patient = new Patient($db);
 
-// Get raw posted data
-$data = json_decode(file_get_contents("php://input"));
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $patient->first_name = $_POST['first_name'] ?? '';
+    $patient->last_name = $_POST['last_name'] ?? '';
+    $patient->date_of_birth = $_POST['date_of_birth'] ?? '';
+    $patient->gender = $_POST['gender'] ?? '';
+    $patient->email = $_POST['email'] ?? '';
+    $patient->phone = $_POST['phone'] ?? '';
+    $patient->address = $_POST['address'] ?? '';
+    $patient->city = $_POST['city'] ?? '';
+    $patient->state = $_POST['state'] ?? '';
+    $patient->zip_code = $_POST['zip_code'] ?? '';
+    $patient->ssn = $_POST['ssn'] ?? '';
 
-// Set patient properties
-$patient->first_name = $data->first_name;
-$patient->last_name = $data->last_name;
-$patient->date_of_birth = $data->date_of_birth;
-$patient->gender = $data->gender;
-$patient->email = $data->email;
-$patient->phone = $data->phone;
-$patient->address = $data->address;
-$patient->city = $data->city;
-$patient->state = $data->state;
-$patient->zip_code = $data->zip_code;
-$patient->ssn = $data->ssn;
-
-// Create the patient
-if ($patient->create()) {
-    echo json_encode(['message' => 'Patient Created']);
+    if ($patient->create()) {
+        http_response_code(200);
+        echo json_encode(['success' => true, 'message' => 'Patient Created']);
+    } else {
+        http_response_code(500);
+        echo json_encode(['success' => false, 'message' => 'Failed to create patient']);
+    }
 } else {
-    echo json_encode(['message' => 'Patient Not Created']);
+    http_response_code(405);
+    echo json_encode(['success' => false, 'message' => 'Invalid request method']);
 }
 ?>

@@ -409,3 +409,21 @@ header nav ul li a:hover {
     font-size: 1.1em;
     color: #999;
 }
+.search-bar {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    font-size: 16px;
+}
+
+#addPatientForm input, #addPatientForm button {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 8px;
+    font-size: 16px;
+}
+
+.dashboard-container {
+    margin-bottom: 40px;
+}
