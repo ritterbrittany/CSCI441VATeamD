@@ -55,13 +55,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['user_id']) && isset($_
         <section class="role-list">
             <h2>Manage User Roles</h2>
             
-            <!-- Search bar for filtering roles -->
             <input type="text" id="searchRoles" placeholder="Search Roles..." onkeyup="searchRoles()" class="search-bar">
             
-            <!-- Button to add a new role -->
+            
             <button class="add-role-btn" onclick="openRoleForm()">Add New Role</button>
             
-            <!-- Role Management Form (hidden initially) -->
+          
             <div id="roleForm" class="role-form" style="display: none;">
                 <h3>Create or Edit Role</h3>
                 <form id="roleFormElement" action="/submit-role" method="POST">
@@ -83,8 +82,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['user_id']) && isset($_
                 </form>
             </div>
             
-            <!-- Table of Existing Roles -->
-            <table>
+           
+            <table class="role-table">
                 <thead>
                     <tr>
                         <th>Username</th>

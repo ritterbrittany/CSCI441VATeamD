@@ -427,3 +427,78 @@ header nav ul li a:hover {
 .dashboard-container {
     margin-bottom: 40px;
 }
+/* Role Management Table Styling */
+.role-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 25px;
+    background-color: white;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.role-table th, .role-table td {
+    padding: 15px 20px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    font-size: 1em;
+}
+
+.role-table th {
+    background-color: #388e3c;
+    color: white;
+    font-size: 1.1em;
+}
+
+.role-table tr:hover {
+    background-color: #f9f9f9;
+}
+
+/* Role Management Page Layout */
+.role-management-container {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 30px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.role-list h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #388e3c;
+}
+
+.role-form {
+    margin: 20px 0;
+    padding: 20px;
+    background-color: #f5fdf8;
+    border-radius: 6px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.role-form label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.role-form input, .role-form select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    font-size: 1em;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Center buttons and inputs */
+.add-role-btn, .role-form button {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 25px;
+    font-size: 1em;
+}
