@@ -3,43 +3,38 @@
 header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json');
 
-// Include database and doctor model
+// Include database and model
 include_once '../Database.php';
 include_once '../backend/Doctor.php';
 
-// Instantiate DB & Connect
+// Instantiate DB & connect
 $database = new Database();
 $db = $database->connect();
 
 // Instantiate Doctor Object
 $doctor = new Doctor($db);
 
-// Get raw posted data
-$data = json_decode(file_get_contents("php://input"));
+// Check if POST data exists
+if (isset($_POST['doctor_id'])) {
+    $doctor_id = $_POST['doctor_id'];
 
-// Validate required fields
-if (!isset($data->doctor_id)) {
-    echo json_encode(['message' => 'Missing Required Parameters']);
-    exit();
-}
+    // Check if doctor exists
+    $stmt = $db->prepare("SELECT doctor_id FROM doctors WHERE doctor_id = :doctor_id");
+    $stmt->bindParam(':doctor_id', $doctor_id, PDO::PARAM_INT);
+    $stmt->execute();
 
-// Set doctor_id
-$doctor->doctor_id = $data->doctor_id;
+    if ($stmt->rowCount() === 0) {
+        echo json_encode(['success' => false, 'message' => 'Doctor not found']);
+        exit();
+    }
 
-// Check if doctor exists
-$query = 'SELECT doctor_id FROM doctors WHERE doctor_id = :doctor_id';
-$stmt = $db->prepare($query);
-$stmt->bindParam(':doctor_id', $doctor->doctor_id);
-$stmt->execute();
-if ($stmt->rowCount() == 0) {
-    echo json_encode(['message' => 'doctor_id Not Found']);
-    exit();
-}
-
-// Delete doctor
-if ($doctor->delete()) {
-    echo json_encode(['doctor_id' => $doctor->doctor_id]);
+    // Delete the doctor
+    if ($doctor->delete($doctor_id)) {
+        echo json_encode(['success' => true, 'message' => 'Doctor deleted']);
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Failed to delete doctor']);
+    }
 } else {
-    echo json_encode(['message' => 'Doctor Not Deleted']);
+    echo json_encode(['success' => false, 'message' => 'Missing doctor_id']);
 }
 ?>

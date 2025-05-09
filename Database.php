@@ -36,7 +36,8 @@ class Database {
     public function connect() {
         $this->conn = null;
 
-        $dsn = "pgsql:host={$this->host};port={$this->port};dbname={$this->db_name}";
+        $dsn = "pgsql:host={$this->host};port={$this->port};dbname={$this->db_name};sslmode=require";
+
 
         try {
             $this->conn = new PDO($dsn, $this->username, $this->password, [

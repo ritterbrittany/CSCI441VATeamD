@@ -1,6 +1,5 @@
 <?php
 session_start();
-
 if (!isset($_SESSION['username'])) {
     header("Location: login.php");
     exit();
@@ -10,15 +9,15 @@ require_once '../Database.php';
 $database = new Database();
 $pdo = $database->connect();
 
+// Doctor class
 class Doctor {
     private $pdo;
-
     public function __construct($pdo) {
         $this->pdo = $pdo;
     }
 
     public function read() {
-        $stmt = $this->pdo->prepare("SELECT doctor_id, first_name, last_name, specialty, email, phone FROM doctors");
+        $stmt = $this->pdo->prepare("SELECT doctor_id, first_name, last_name, specialty FROM doctors");
         $stmt->execute();
         return $stmt;
     }
@@ -31,9 +30,9 @@ class Doctor {
     }
 
     public function create($data) {
-        $stmt = $this->pdo->prepare("INSERT INTO doctors (first_name, last_name, specialty, email, phone) 
+        $stmt = $this->pdo->prepare("INSERT INTO doctors (first_name, last_name, specialty, email, phone)
                                      VALUES (:first_name, :last_name, :specialty, :email, :phone)");
-        return $stmt->execute([
+        return $stmt->execute([ 
             ':first_name' => $data['first_name'],
             ':last_name' => $data['last_name'],
             ':specialty' => $data['specialty'],
@@ -51,25 +50,42 @@ class Doctor {
 
 $doctor = new Doctor($pdo);
 
+// Handle form submission to add a doctor
+$message = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['first_name'])) {
     $success = $doctor->create($_POST);
     if ($success) {
-        header("Location: Doctor.php");
-        exit();
+        $message = "Doctor added successfully!";
+        header("Refresh:0"); // Refresh to show the new doctor in the list
     } else {
         $message = "Failed to add doctor.";
     }
 }
 
+// Handle doctor deletion through POST request
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete']) && $_POST['delete'] === 'true' && isset($_POST['doctor_id'])) {
+    $doctor_id = $_POST['doctor_id'];
+    $success = $doctor->delete($doctor_id);
+    
+    if ($success) {
+        echo json_encode(['success' => true, 'message' => 'Doctor deleted successfully']);
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Failed to delete doctor']);
+    }
+    exit();  // Ensure the script stops here and doesn't process the rest
+}
+
 $doctors_stmt = $doctor->read();
 $doctors = $doctors_stmt->fetchAll(PDO::FETCH_ASSOC);
 
+// Single doctor view
 $single_doctor = null;
 if (isset($_GET['doctor_id'])) {
     $stmt = $doctor->read_single($_GET['doctor_id']);
     $single_doctor = $stmt->fetch(PDO::FETCH_ASSOC);
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -77,29 +93,31 @@ if (isset($_GET['doctor_id'])) {
     <title>Doctor Details</title>
     <link rel="stylesheet" href="../css/styles.css">
     <script>
+        // Delete doctor function
         function deleteDoctor(doctorId) {
             if (!confirm("Are you sure you want to delete this doctor?")) return;
 
-            fetch('../doctors/delete.php', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ doctor_id: doctorId })
-})
-            .then(res => res.json())
+            fetch('Doctor.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `doctor_id=${doctorId}&delete=true`
+            })
+            .then(res => res.json())  // Ensure we parse the response as JSON
             .then(data => {
                 if (data.success) {
                     alert("Doctor deleted successfully.");
-                    location.reload();
+                    location.reload();  // Reload the page to reflect changes
                 } else {
-                    alert("Failed to delete doctor.");
+                    alert("Failed to delete doctor: " + data.message);
                 }
             })
             .catch(err => {
                 console.error('Delete error:', err);
-                alert("An error occurred.");
+                alert("An error occurred while deleting.");
             });
         }
 
+        // Filter doctors by name
         function filterDoctors() {
             const input = document.getElementById('searchInput').value.toLowerCase();
             const rows = document.querySelectorAll('#doctorsTableBody tr');
@@ -154,8 +172,8 @@ if (isset($_GET['doctor_id'])) {
 
     <section class="dashboard-container">
         <h2>Add Doctor</h2>
-        <?php if (!empty($message)): ?>
-            <p style="color: red;"><?= $message ?></p>
+        <?php if ($message): ?>
+            <p style="color: green;"><?= $message ?></p>
         <?php endif; ?>
         <form method="POST" class="add-patient-form">
             <input name="first_name" required placeholder="First Name">

@@ -14,30 +14,17 @@ $db = $database->connect();
 // Instantiate Doctor Object
 $doctor = new Doctor($db);
 
-// Get the raw posted data
-$data = json_decode(file_get_contents("php://input"));
+// Check if POST data exists
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['first_name'])) {
+    $data = $_POST;
 
-// Validate the data
-if (!isset($data->first_name) || !isset($data->last_name) || !isset($data->specialty) || !isset($data->email) || !isset($data->phone)) {
-    echo json_encode(['message' => 'Missing Required Parameters']);
-    exit();
+    // Create doctor
+    $success = $doctor->create($data);
+    if ($success) {
+        header("Location: Doctor.php");
+        exit();
+    } else {
+        $message = "Failed to add doctor.";
+    }
 }
-
-// Set the properties of the doctor
-$doctor->first_name = $data->first_name;
-$doctor->last_name = $data->last_name;
-$doctor->specialty = $data->specialty;
-$doctor->email = $data->email;
-$doctor->phone = $data->phone;
-
-// Create the doctor
-if ($doctor->create()) {
-    echo json_encode([
-        'message' => 'Doctor Added',
-        'doctor_id' => $doctor->doctor_id,  // Assuming `create()` method sets the doctor_id after insertion
-        'first_name' => $doctor->first_name,
-        'last_name' => $doctor->last_name
-    ]);
-} else {
-    echo json_encode(['message' => 'Doctor Not Created']);
-}
+?>
