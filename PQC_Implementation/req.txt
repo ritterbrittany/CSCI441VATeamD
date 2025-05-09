@@ -1,0 +1,8 @@
+Pip Install Requirements:
+- pqcrypto
+- pycryptodome
+- psycopg2-binary
+- cachetools
+
+Required Documentation References:
+- https://www.schneier.com/wp-content/uploads/2008/10/skein.pdf
