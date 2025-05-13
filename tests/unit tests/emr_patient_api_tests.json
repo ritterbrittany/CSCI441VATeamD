@@ -1,0 +1,175 @@
+{
+  "info": {
+    "name": "EMR Patient API Tests",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "emr-patient-tests"
+  },
+  "item": [
+    {
+      "name": "Create Patient",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"first_name\": \"Postman\", \"last_name\": \"Test\", \"date_of_birth\": \"1991-11-11\", \"gender\": \"Other\", \"email\": \"postman.test@example.com\", \"phone\": \"1112223333\", \"address\": \"123 Main St\", \"city\": \"Testville\", \"state\": \"TS\", \"zip_code\": \"12345\", \"ssn\": \"111-22-3333\"}"
+        },
+        "url": {
+          "raw": "http://localhost/api/patients/create.php",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "path": [
+            "api",
+            "patients",
+            "create.php"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "pm.test(\"Response contains success message\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.message).to.eql(\"Patient Created\");",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Read All Patients",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost/api/patients/read.php",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "path": [
+            "api",
+            "patients",
+            "read.php"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "pm.test(\"Response should be an array\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(Array.isArray(jsonData)).to.be.true;",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Read Single Patient",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost/api/patients/read_single.php?patient_id=1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "path": [
+            "api",
+            "patients",
+            "read_single.php"
+          ],
+          "query": [
+            {
+              "key": "patient_id",
+              "value": "1"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "pm.test(\"Response contains patient_id\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property(\"patient_id\");",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Delete Patient",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"patient_id\": 1}"
+        },
+        "url": {
+          "raw": "http://localhost/api/patients/delete.php",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "path": [
+            "api",
+            "patients",
+            "delete.php"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "pm.test(\"Response confirms deletion or error\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.any.keys('patient_id', 'message');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    }
+  ]
+}
