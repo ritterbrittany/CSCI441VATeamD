@@ -1,3 +1,8 @@
+  // written by: Brittany Ritter 
+  // tested by: Brandon Williams, Christopher Pham, Riley Weaver
+  // debugged by:
+  // etc.
+
 <?php
 // forgot-password.php
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
