@@ -1,3 +1,8 @@
+  // written by: Brandon Williams,
+  // tested by: Brittany Ritter, Christopher Pham, Riley Weaver
+  // debugged by:
+  // etc.
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
