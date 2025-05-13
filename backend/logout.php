@@ -1,3 +1,8 @@
+  // written by: Brandon Williams,
+  // tested by: Brittany Ritter, Christopher Pham, Riley Weaver
+  // debugged by:
+  // etc.
+
 <?php
 // Start the session
 session_start();
