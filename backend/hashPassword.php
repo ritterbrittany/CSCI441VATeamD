@@ -1,3 +1,8 @@
+  // written by: Brandon Williams,
+  // tested by: Brittany Ritter, Christopher Pham, Riley Weaver
+  // debugged by:
+  // etc.
+
 <?php
 // Define plain-text passwords
 $plain_password_doctor = 'hashedpassword456'; // For doctor_alice
